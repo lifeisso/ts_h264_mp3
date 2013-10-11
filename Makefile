@@ -32,7 +32,7 @@ wzq_config:
 
 .PHONY:clean 
 clean: 
-	-@$(RM) *.o *~ $(OBJ_NAME)
+	-@$(RM) *.o *~ $(TARGET)
 
 
 
