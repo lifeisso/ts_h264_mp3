@@ -1,6 +1,7 @@
 
 #include "Conversion.h"
 
+ts_packet tp;
 FILE * OpenInputFile(FILE * FinputFile,char * InputFileName) 
 {
 	FinputFile = fopen(InputFileName,"rb");

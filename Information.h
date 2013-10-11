@@ -1,5 +1,6 @@
-#pragma  once
-
+#ifndef INFORMATION_H
+#define INFORMATION_H
+ 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -252,3 +253,23 @@ typedef struct Tag_Mp3_Header
 TsPes * ts_video_pes;                        //视频PES结构体
 TsPes * ts_audio_pes;                        //音频PES结构体
 static Continuity_Counter continuity_counter;     //包类型计数器
+
+#define TS_PACKET_LEN   188
+#define TS_PACKET_NUM   100
+//#define TS_PACKET_SIZE  (TS_PACKET_LEN*TS_PACKET_NUM)
+struct ts_one_packet{
+        char buf[TS_PACKET_LEN];
+#define TS_PACKET_NOUSED        0
+#define TS_PACKET_USED          1
+        int used; //0: no used  1: used
+};
+
+typedef struct ts_packet{
+        struct ts_one_packet tp_buf[TS_PACKET_NUM];
+        unsigned int tp_head;
+        unsigned int tp_tail;
+}ts_packet;
+extern ts_packet tp;
+
+#endif
+
