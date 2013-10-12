@@ -15,6 +15,7 @@
 #else
 #define INPUTFILENAME_TS               "av_file/22.ts"
 #define OUTPUTFILENAME_H264            "av_file/22.264"
+//#define OUTPUTFILENAME_H264            "/mnt/hgfs/share/src/TS/RecordH264.h264"
 #define OUTPUTFILENAME_NEWH264         "av_file/NEW22.264"
 #define OUTPUTFILENAME_MP3             "av_file/22.mp3"
 #define OUTPUTFILENAME_NEWMP3          "av_file/NEW22.mp3"
@@ -255,7 +256,7 @@ TsPes * ts_audio_pes;                        //音频PES结构体
 static Continuity_Counter continuity_counter;     //包类型计数器
 
 #define TS_PACKET_LEN   188
-#define TS_PACKET_NUM   100
+#define TS_PACKET_NUM   500
 //#define TS_PACKET_SIZE  (TS_PACKET_LEN*TS_PACKET_NUM)
 struct ts_one_packet{
         char buf[TS_PACKET_LEN];
@@ -268,6 +269,8 @@ typedef struct ts_packet{
         struct ts_one_packet tp_buf[TS_PACKET_NUM];
         unsigned int tp_head;
         unsigned int tp_tail;
+	
+	pthread_mutex_t tp_mutex;
 }ts_packet;
 extern ts_packet tp;
 

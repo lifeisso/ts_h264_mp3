@@ -140,7 +140,8 @@ int CreatePAT()
 
 	PAT_CRC = Zwg_ntohl(calc_crc32(pat + 5, pointer_pat - pat - 5));
 	memcpy(pointer_pat, (unsigned char *)&PAT_CRC, 4);
-	fwrite(PatBuf,188,1,FOutVideoTs);                                           //将PAT包写入文件
+	write_ts_packet(PatBuf);
+	//fwrite(PatBuf,188,1,FOutVideoTs);                                           //将PAT包写入文件
 	return 1;
 }
 
@@ -223,7 +224,8 @@ int CreatePMT()
 	PMT_CRC = Zwg_ntohl(calc_crc32(pmt + 5, pointer_pmt - pmt - 5));
 	memcpy(pointer_pmt, (unsigned char  *)&PMT_CRC, 4);
     
-	fwrite(PmtBuf,188,1,FOutVideoTs);                                          //将PAT包写入文件
+	write_ts_packet(PmtBuf);
+	//fwrite(PmtBuf,188,1,FOutVideoTs);                                          //将PAT包写入文件
 	return 1;
 }
 
@@ -499,7 +501,7 @@ int GetFrameType(NALU_t * nal)
 		switch(frame_type)
 		{
 		case 0: case 5: /* P */
-			printf("当前帧是 P 帧！\n");
+			//printf("当前帧是 P 帧！\n");
 			VideoFrameCount ++;
 			if (VideoFrameCount == 1)
 			{
@@ -515,7 +517,7 @@ int GetFrameType(NALU_t * nal)
 			}
 			break;
 		case 1: case 6: /* B */
-	     	printf("当前帧是 B 帧！\n");
+			//printf("当前帧是 B 帧！\n");
 			VideoFrameCount ++;
 			if (VideoFrameCount == 1)
 			{
@@ -531,10 +533,10 @@ int GetFrameType(NALU_t * nal)
 			}
 			break;
 		case 3: case 8: /* SP */
-	    	printf("当前帧是 SP 帧！\n");
+	    	//printf("当前帧是 SP 帧！\n");
 		    break;
 		case 2: case 7: /* I */
-		    printf("当前帧是 I 帧！\n");
+		    //printf("当前帧是 I 帧！\n");
 			VideoFrameCount ++;
 			if (VideoFrameCount == 1)
 			{
@@ -571,6 +573,7 @@ int ProcessingVideo()
 
 	while(!feof(FinH264))                                          //如果未到文件结尾
 	{
+		usleep(10000);
 		PrefixLen_H264 = 0;
 		GetAnnexbNALU(n);                                          //取出一帧数据         
 		OneFrameLen_H264 = 0;
@@ -633,6 +636,7 @@ int ProcessingVideo()
 			OneFrameLen_H264 = OneFrameLen_H264_Temporary;
 			H2642PES();                                         //开始将一帧或几帧数据填入 PES结构体
 			memset(OneFrameBuf_H264_Temporary ,0,TS_MAX_OUT_BUFF * 3);
+	
 			OneFrameLen_H264_Temporary = 0;
 		}
 	}
@@ -1551,7 +1555,8 @@ int PES2TS(TsPes * ts_pes,unsigned int Video_Audio_PID ,Ts_Adaptation_field * ts
 	NeafBuf += FirstPacketLoadLength;
 	ts_pes->Pes_Packet_Length_Beyond -=FirstPacketLoadLength;
 	//将包写入文件
-	fwrite(TSbuf,188,1,FOutVideoTs);                                        //将一包数据写入文件
+	write_ts_packet(TSbuf);
+	//fwrite(TSbuf,188,1,FOutVideoTs);                                        //将一包数据写入文件
 	WritePacketNum ++;                                                      //已经写入文件的包个数++
 
 
@@ -1573,7 +1578,8 @@ int PES2TS(TsPes * ts_pes,unsigned int Video_Audio_PID ,Ts_Adaptation_field * ts
 			memcpy(pointer_ts,NeafBuf,184); 
 			NeafBuf += 184;
 			ts_pes->Pes_Packet_Length_Beyond -=184;
-			fwrite(TSbuf,188,1,FOutVideoTs); 
+			write_ts_packet(TSbuf);
+			//fwrite(TSbuf,188,1,FOutVideoTs); 
 		}
 		else
 		{
@@ -1595,7 +1601,8 @@ int PES2TS(TsPes * ts_pes,unsigned int Video_Audio_PID ,Ts_Adaptation_field * ts
 				memcpy(pointer_ts,NeafBuf,182);
 				NeafBuf += 182;
 				ts_pes->Pes_Packet_Length_Beyond -=182;
-				fwrite(TSbuf,188,1,FOutVideoTs); 
+				write_ts_packet(TSbuf);
+				//fwrite(TSbuf,188,1,FOutVideoTs); 
 			}
 			else
 			{
@@ -1616,7 +1623,8 @@ int PES2TS(TsPes * ts_pes,unsigned int Video_Audio_PID ,Ts_Adaptation_field * ts
 				pointer_ts+=(184-ts_pes->Pes_Packet_Length_Beyond-2);
 				memcpy(pointer_ts,NeafBuf,ts_pes->Pes_Packet_Length_Beyond);
 				ts_pes->Pes_Packet_Length_Beyond = 0;
-				fwrite(TSbuf,188,1,FOutVideoTs);   //将一包数据写入文件
+				write_ts_packet(TSbuf);
+				//fwrite(TSbuf,188,1,FOutVideoTs);   //将一包数据写入文件
 				WritePacketNum ++;  
 				return 1;
 			}

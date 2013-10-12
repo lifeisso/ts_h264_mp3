@@ -4,9 +4,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h> /* superset of previous */
-#include <netinet/in.h>
 #include <arpa/inet.h>
 
+#if 0
 #define SERV_ADDR	"224.0.1.1"
 #define SERV_PORT	10002
 int msd;
@@ -21,15 +21,17 @@ void mutilcast_init(void)
         servaddr.sin_addr.s_addr = inet_addr(SERV_ADDR);
         servaddr.sin_port        = htons(SERV_PORT);
 
-	socklen_t servaddrlen = sizeof(servaddr);
+	servaddrlen = sizeof(servaddr);
 }
-
 int mutilcast_send(void)
 {
 	char buf[188];
 
 	int ret = read_ts_packet(buf);
 	if(ret == 0){
+		printf("new data...\n");
 		return sendto(msd, buf, 188, 0, &servaddr, servaddrlen);
 	}
 }
+
+#endif

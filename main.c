@@ -15,8 +15,16 @@ static void *ThreadFun_Audio(void *arg)
 	return NULL;
 }
 
+static void *threadfun_ts(void *arg)
+{
+	processingts();
+	return NULL;
+}
+
 int main(void)
 {
+	pthread_t handle_ts;
+
 	FinH264 =  OpenInputFile(FinH264,OUTPUTFILENAME_H264);
 	FinMp3 =   OpenInputFile(FinMp3,OUTPUTFILENAME_MP3);
 	FOutNEWH264 = OpenOutputFile(FOutNEWH264,OUTPUTFILENAME_NEWH264);
@@ -42,8 +50,10 @@ int main(void)
 	Frame_Time = (1.0/(FPS_Video)) * 90000;
 	//handle_H264 = CreateThread(NULL,0,ThreadFun_Video,NULL,0,NULL);     //创建视频处理线程
     //handle_Mp3 = CreateThread(NULL,0,ThreadFun_Audio,NULL,0,NULL);      //创建视频处理线程
+	ts_packet_init();
 	pthread_create(&handle_H264, NULL,ThreadFun_Video, NULL);     //创建视频处理线程
-    	pthread_create(&handle_Mp3, NULL, ThreadFun_Audio, NULL);      //创建视频处理线程
+    	//pthread_create(&handle_Mp3, NULL, ThreadFun_Audio, NULL);      //创建视频处理线程
+	pthread_create(&handle_ts, NULL, threadfun_ts, NULL);
 	//WaitForMultipleObjects(1,&handle_H264,TRUE,INFINITE);               //一直等待线程结束
 printf("sstart.............\n");
 	pause();
